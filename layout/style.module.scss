@@ -1,0 +1,26 @@
+#layout {
+  min-width: 100vw;
+  min-height: 100vh;
+
+  .sidebar, .main {
+    height: 100vh;
+  }
+
+  .header, .title {
+    height: 60px;
+  }
+
+  .title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    color: #fff;
+  }
+  
+  .content {
+    max-height: 100%;
+    overflow: auto;
+  }
+}

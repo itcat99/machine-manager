@@ -4,70 +4,6 @@ const db = new Surreal("http://124.70.69.38:8000/rpc");
 
 /** TYPES */
 
-/** 分类结构 */
-export interface CategoryI extends Record<string, any> {
-  description: string | null;
-  id: string;
-  level: number;
-  name: string;
-}
-
-/** 参数组结构 */
-export interface ParamGroupI extends Record<string, any> {
-  "->param": any[];
-  id: string;
-  name: string;
-  position: number;
-}
-
-/** 参数结构 */
-export interface ParamI {
-  id: string;
-  name: string;
-  param_group: string;
-  position: number;
-  aliases?: string[];
-}
-
-/** 产品模板结构 */
-export interface ProductSpecI extends Record<string, any> {
-  category: CategoryI;
-  id: string;
-  name: string;
-  params: ParamI[];
-}
-
-/** 产品详情结构 */
-export interface ProductI extends Record<string, any> {
-  产品名称: string | null;
-  产品图片: string | null;
-  产品系列: string | null;
-  产品编码: string | null;
-  产品颜色: string | null;
-  功率: string | null;
-  动力: string | null;
-  压力Mpa: string | null;
-  品牌: string | null;
-  备注: string | null;
-  宽mm: string | null;
-  气量: string | null;
-  设备出厂时间: string | null;
-  配套数量: string | null;
-  配套设备品牌: string | null;
-  配套设备型号: string | null;
-  长mm: string | null;
-  高mm: string | null;
-
-  /** 产品模板 */
-  product_spec: {
-    category: string | null;
-    id: string;
-    name: string;
-  };
-
-  params: ParamI[];
-}
-
 interface ToIdInObjI {
   [key: string]: any;
 }
@@ -219,7 +155,10 @@ export class MtoolClient {
     let id = "进气阀";
     let param = {category: "01020902", params: ["动力", "配套设备品牌"]};
     */
-  async createProductSpecOne(id: string, productSpec: ProductSpecI) {
+  async createProductSpecOne(
+    id: string,
+    productSpec: Omit<ProductSpecI, "id" | "name">
+  ) {
     to_id_in(productSpec, "category", "category");
     to_id_in(productSpec, "params", "param");
     return await db.create(to_id(id, "product_spec"), productSpec);
@@ -271,7 +210,7 @@ export class MtoolClient {
       }
     };
     */
-  async createProductOne(product: ProductI) {
+  async createProductOne(product: Omit<ProductI, "id">) {
     to_id_in(product, "product_spec", "product_spec");
     // 注：返回的数据里，包含了新创建的产品的id
     return await db.create("product", product);

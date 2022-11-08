@@ -1,0 +1,9 @@
+.product-templates {
+  
+  .tag {
+    cursor: pointer;
+    &:hover {
+      border-color: red;
+    }
+  }
+}
