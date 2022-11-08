@@ -26,7 +26,7 @@ export default function App({ Component, pageProps }: AppProps) {
       await api.login("root", "root");
       setIsInit(true);
     })().catch((err) => console.error(err));
-  }, [apiIsInit.current]);
+  }, []);
 
   return (
     <ConfigProvider locale={zhCN}>
