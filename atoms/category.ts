@@ -9,3 +9,8 @@ export const categoryListAtom = atom<CategoryI[]>({
   key: "categoryList",
   default: [],
 });
+
+export const categoryTreeAtom = atom<CategoryI[]>({
+  key: "categoryTree",
+  default: [],
+});

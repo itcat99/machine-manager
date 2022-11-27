@@ -5,7 +5,7 @@ import { useState } from "react";
 import classes from "./style.module.scss";
 
 export default function Category() {
-  const { categoryList } = useCategory();
+  const { categoryTree, categoryList } = useCategory();
   const [keyword, setKeyword] = useState<string>();
 
   return (
@@ -29,9 +29,16 @@ export default function Category() {
           //   />
           // </section>
         )}
-        dataSource={categoryList.filter((item) =>
-          keyword ? item.name.includes(keyword) : true
-        )}
+        // dataSource={categoryList.filter((item) =>
+        //   keyword ? item.name.includes(keyword) : true
+        // )}
+        dataSource={
+          keyword
+            ? categoryList.filter((item) =>
+                keyword ? item.name.includes(keyword) : true
+              )
+            : categoryTree
+        }
         rowKey="id"
         columns={[
           { key: "id", dataIndex: "id", title: "ID" },
@@ -45,12 +52,14 @@ export default function Category() {
             key: "level",
             dataIndex: "level",
             title: "分级",
-            filters: [
-              { text: "Level 1", value: 1 },
-              { text: "Level 2", value: 2 },
-              { text: "Level 3", value: 3 },
-              { text: "Level 4", value: 4 },
-            ],
+            filters: keyword
+              ? [
+                  { text: "Level 1", value: 1 },
+                  { text: "Level 2", value: 2 },
+                  { text: "Level 3", value: 3 },
+                  { text: "Level 4", value: 4 },
+                ]
+              : undefined,
             onFilter: (value, record) => record.level === value,
           },
           { key: "description", dataIndex: "description", title: "描述" },

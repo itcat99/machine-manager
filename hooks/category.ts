@@ -1,12 +1,34 @@
 import { api } from "@/api";
-import { categoryAtom, categoryListAtom } from "atoms/category";
-import { useEffect, useRef, useState } from "react";
+import {
+  categoryAtom,
+  categoryListAtom,
+  categoryTreeAtom,
+} from "atoms/category";
+import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 
 export const useCategory = () => {
   const [categoryList, setCategoryList] = useRecoilState(categoryListAtom);
   const [category, setCategory] = useRecoilState(categoryAtom);
+  const [categoryTree, setCategoryTree] = useRecoilState(categoryTreeAtom);
   const [loading, setLoading] = useState(false);
+
+  const handleTreeData = (
+    current: CategoryI,
+    category: { [key: string]: CategoryI[] }
+  ) => {
+    const { id } = current;
+    const res = Object.assign({}, current);
+
+    res.children = category[id];
+    if (res.children && res.children.length) {
+      res.children = res.children.map((item) => {
+        return handleTreeData(item, category);
+      });
+    }
+
+    return res;
+  };
 
   /**
    * data to tree struct
@@ -18,6 +40,7 @@ export const useCategory = () => {
     let collection: { [key: string]: CategoryI[] } = {
       TOP: [],
     };
+    let tree: CategoryI[] = [];
 
     _list.forEach((category) => {
       const { level, id } = category;
@@ -45,7 +68,11 @@ export const useCategory = () => {
       }
     });
 
+    tree = collection["TOP"];
+    tree = tree.map((item) => handleTreeData(item, collection));
+
     setCategory(collection);
+    setCategoryTree(tree);
   };
 
   useEffect(() => {
@@ -56,7 +83,7 @@ export const useCategory = () => {
       const res = await api.selectCategoryAll();
       setCategoryList(res);
       handleData(res);
-      console.log("AAA");
+
       setLoading(false);
     })().catch((err) => console.error(err));
   }, [categoryList, loading]);
@@ -65,5 +92,6 @@ export const useCategory = () => {
     loading,
     category,
     categoryList,
+    categoryTree,
   };
 };
